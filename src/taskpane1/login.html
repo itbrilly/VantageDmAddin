@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>SB Admin 2 - Login</title>
+
+  <!-- Custom fonts for this template-->
+  <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+  <!-- Custom styles for this template-->
+  <link href="css/sb-admin-2.min.css" rel="stylesheet">
+
+</head>
+
+<body class="bg-gradient-primary">
+
+  <div class="container">
+
+    <!-- Outer Row -->
+    <div class="row justify-content-center">
+
+      <div class="col-xl-10 col-lg-12 col-md-9">
+
+        <div class="card o-hidden border-0 shadow-lg my-5">
+          <div class="card-body p-0">
+            <!-- Nested Row within Card Body -->
+            <div class="row">
+              <div class="col-lg-6 d-none d-lg-block"></div>
+              <div class="col-lg-6">
+                <div class="p-5">
+                  <div class="text-center">
+                    <h1 class="h4 text-gray-900 mb-4">Welcome Bak!</h1>
+                  </div>
+                    <div class="form-group">
+                      <input type="email" class="form-control"  id="InputUserName" aria-describedby="emailHelp" placeholder="User Name">
+                    </div>
+                    <div class="form-group">
+                      <input type="password" class="form-control"  id="InputPassword" placeholder="Password">
+                    </div>
+                    <span style="color: red;font-size: 14px;" id="LoginError"></span>
+                    <div class="form-group">
+                      <div class="custom-control custom-checkbox small">
+                        <input type="checkbox" class="custom-control-input" id="customCheck">
+                        <label class="custom-control-label" for="customCheck">Remember Me</label>
+                      </div>
+                    </div>
+                    <button onclick="APIlogin()"  class="btn btn-primary btn-user btn-block">
+                      Logi
+                    </button>
+                    <hr>
+                    <a href="index.html" class="btn btn-google btn-user btn-block">
+                      <i class="fab fa-google fa-fw"></i> Login with Google
+                    </a>
+                    <a href="index.html" class="btn btn-facebook btn-user btn-block">
+                      <i class="fab fa-facebook-f fa-fw"></i> Login with Facebook
+                    </a>
+                  <hr>
+                  <div class="text-center">
+                    <a class="small" href="forgot-password.html">Forgot Password?</a>
+                  </div>
+                  <div class="text-center">
+                    <a class="small" href="register.html">Create an Account!</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Bootstrap core JavaScript-->
+  <script src="vendor/jquery/jquery.min.js"></script>
+  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Core plugin JavaScript-->
+  <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script src="js/sb-admin-2.min.js"></script>
+  <script src="https://localhost:3000/src/taskpane1/js/Common.js"></script>
+  <script>
+    function APIlogin(){
+      
+  var username=document.getElementById("InputUserName").value;
+  var password=document.getElementById("InputPassword").value;
+  console.log(username+","+password);
+  if(username==null || username==""){
+    document.getElementById("LoginError").innerHTML = "Please Enter Username";
+    return;
+  }
+  else if (password==null || password==""){
+    document.getElementById("LoginError").innerHTML = "Please Enter Password";
+    return;
+  }
+  else{
+    document.getElementById("LoginError").innerHTML = "";
+  }
+  var loginRequest=new Object();
+  loginRequest.UserName=btoa(username);
+  loginRequest.Password=btoa(password);
+  $.ajax({
+    url: "http://localhost:63428/api/Login",
+    method: 'POST',
+    dataType: 'json',
+    data: loginRequest,
+    success: function (response) {
+      if(response.IsAuthorized){
+        var userinfo=new Object();
+        userinfo.AccessToken=response.AccessToken;
+        userinfo.UserName=response.UserName;
+        localStorage.setItem("PluginUserInfo", JSON.stringify(userinfo));
+        window.location.href = "https://localhost:3000/src/taskpane1/taskpane1.html";
+      }
+     else{
+      document.getElementById("LoginError").innerHTML = "Invalid Credentails";
+     }
+    },
+   fail : function( jqXHR, textStatus ) {
+    console.log( "Request failed: " + textStatus );
+   }
+})
+}
+  </script>
+
+</body>
+
+</html>
